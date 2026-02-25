@@ -6,7 +6,7 @@ type DBAchievement = { id: number; type: string; label: string; title: string; s
 export default function Achievements({ achievements: _db }: { achievements?: DBAchievement[] }) {
   // DB data shapes the bento — static layout kept for now, content from DB when available
   return (
-    <section className="border-t border-white/[.07] px-6 py-24 md:py-32">
+    <section id="achievements" className="border-t border-white/[.07] px-6 py-24 md:py-32">
       <div className="mx-auto max-w-[1200px]">
 
         <FadeIn>

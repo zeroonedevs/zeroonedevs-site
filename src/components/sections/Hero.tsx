@@ -1,17 +1,33 @@
 "use client";
 import { motion } from "framer-motion";
+import Counter from "@/components/ui/Counter";
 
 const stats = [
-  { value: "500+",   label: "Members"         },
-  { value: "48",     label: "Projects shipped" },
-  { value: "₹20L+",  label: "Grants won"      },
-  { value: "12",     label: "Partner labs"     },
+  { to: 500, prefix: "",   suffix: "+",  label: "Members"         },
+  { to: 48,  prefix: "",   suffix: "",   label: "Projects shipped" },
+  { to: 20,  prefix: "₹", suffix: "L+", label: "Grants won"       },
+  { to: 12,  prefix: "",   suffix: "",   label: "Partner labs"     },
 ];
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-svh flex-col px-6">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center py-24">
+    <section className="relative flex min-h-svh flex-col overflow-hidden px-6">
+
+      {/* Subtle dot-grid texture — fades out toward the bottom */}
+      <div
+        className="pointer-events-none absolute inset-0 select-none"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+          maskImage:
+            "radial-gradient(ellipse 90% 65% at 65% 5%, rgba(0,0,0,0.55) 0%, transparent 80%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 90% 65% at 65% 5%, rgba(0,0,0,0.55) 0%, transparent 80%)",
+        }}
+      />
+
+      <div className="relative mx-auto flex w-full max-w-[1200px] flex-1 flex-col justify-center py-24">
 
         {/* Brand name */}
         <motion.div
@@ -73,17 +89,19 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Stats */}
+      {/* Animated stats */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.45 }}
-        className="mx-auto w-full max-w-[1200px] border-t border-white/[.07] py-8"
+        className="relative mx-auto w-full max-w-[1200px] border-t border-white/[.07] py-8"
       >
         <div className="flex flex-wrap gap-x-12 gap-y-5">
           {stats.map(s => (
             <div key={s.label}>
-              <p className="text-[22px] font-black text-white">{s.value}</p>
+              <p className="text-[22px] font-black text-white">
+                <Counter to={s.to} prefix={s.prefix} suffix={s.suffix} />
+              </p>
               <p className="mt-0.5 font-mono text-[11px] text-white/25">{s.label}</p>
             </div>
           ))}

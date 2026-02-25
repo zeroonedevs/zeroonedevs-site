@@ -1,26 +1,50 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const FULL = "ZeroOne"; // Z-e-r-o = 4, O-n-e = 3
+const FULL = "ZeroOne";
 
 const LINKS = [
-  { href: "#about", label: "About"  },
-  { href: "#work",  label: "Work"   },
-  { href: "#team",  label: "Team"   },
-  { href: "#apply", label: "Apply"  },
+  { href: "#about", label: "About" },
+  { href: "#work",  label: "Work"  },
+  { href: "#team",  label: "Team"  },
+  { href: "#apply", label: "Apply" },
 ];
 
+const SECTION_IDS = LINKS.map(l => l.href.slice(1));
+
 export default function Navbar() {
-  const [typed, setTyped] = useState("");
+  const [typed, setTyped]   = useState("");
+  const [active, setActive] = useState("");
 
   useEffect(() => {
+    // Typing animation
     let i = 0;
-    const id = setInterval(() => {
+    const tid = setInterval(() => {
       i++;
       setTyped(FULL.slice(0, i));
-      if (i >= FULL.length) clearInterval(id);
+      if (i >= FULL.length) clearInterval(tid);
     }, 110);
-    return () => clearInterval(id);
+
+    // Active section tracking via IntersectionObserver
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) setActive(visible[0].target.id);
+      },
+      { threshold: 0.25, rootMargin: "0px 0px -40% 0px" },
+    );
+
+    SECTION_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
+
+    return () => {
+      clearInterval(tid);
+      obs.disconnect();
+    };
   }, []);
 
   const done = typed.length === FULL.length;
@@ -45,15 +69,22 @@ export default function Navbar() {
 
         <span className="mx-1 h-3.5 w-px shrink-0 bg-white/[.1]" />
 
-        {LINKS.map(l => (
-          <a
-            key={l.href}
-            href={l.href}
-            className="rounded-full px-4 py-1.5 text-[13px] text-white/35 transition-colors hover:bg-white/[.07] hover:text-white/80"
-          >
-            {l.label}
-          </a>
-        ))}
+        {LINKS.map(l => {
+          const isActive = active === l.href.slice(1);
+          return (
+            <a
+              key={l.href}
+              href={l.href}
+              className={`rounded-full px-4 py-1.5 text-[13px] transition-colors ${
+                isActive
+                  ? "bg-white/[.08] text-white/90"
+                  : "text-white/35 hover:bg-white/[.07] hover:text-white/80"
+              }`}
+            >
+              {l.label}
+            </a>
+          );
+        })}
       </nav>
     </div>
   );
