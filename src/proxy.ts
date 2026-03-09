@@ -5,7 +5,7 @@ const secret = new TextEncoder().encode(
   process.env.JWT_SECRET ?? "zeroone-fallback-secret-2025"
 );
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // /admin (login page) is always accessible
