@@ -66,15 +66,15 @@ export async function POST() {
       ON CONFLICT (username) DO NOTHING`;
 
     // ── Seed projects ──────────────────────────────────────────────────────
+    await sql`TRUNCATE TABLE projects RESTART IDENTITY CASCADE`;
     const pc = await sql`SELECT COUNT(*) as c FROM projects`;
     if (Number(pc[0].c) === 0) {
       const projects = [
-        { cat: "AI",       title: "Neural Mesh",          tag: "Edge Inference",      body: "Real-time neural inference at the edge — sub-10ms latency on consumer hardware.",                tags: ["AI","Edge","Research"],       color: "rgba(59,130,246,0.55)",  lines: "rgba(59,130,246,0.35)"  },
-        { cat: "Hardware", title: "CyberKinetic Core",    tag: "Autonomous Robotics", body: "Embedded control stack for dynamic robotic environments with RTOS and sensor fusion.",            tags: ["Hardware","Robotics","RTOS"], color: "rgba(249,115,22,0.55)",  lines: "rgba(249,115,22,0.35)"  },
-        { cat: "Systems",  title: "Orbit Scheduler",      tag: "Distributed Infra",   body: "Zero-downtime task orchestration built for microservice-heavy production systems.",                tags: ["Systems","Infra","Cloud"],    color: "rgba(139,92,246,0.55)",  lines: "rgba(139,92,246,0.35)"  },
-        { cat: "Design",   title: "Synaptic UI",          tag: "Design Systems",      body: "Component library that adapts layout density in real-time based on user behaviour signals.",      tags: ["Design","React","Systems"],   color: "rgba(34,197,94,0.55)",   lines: "rgba(34,197,94,0.35)"   },
-        { cat: "AI",       title: "BioSignal Filter",     tag: "Health Tech",         body: "Wearable biosensor pipeline with on-device anomaly detection and cloud sync.",                    tags: ["AI","Health","Wearables"],    color: "rgba(6,182,212,0.55)",   lines: "rgba(6,182,212,0.35)"   },
-        { cat: "Systems",  title: "Global Mesh Protocol", tag: "P2P Networking",      body: "Resilient decentralised networking protocol for heterogeneous edge-cloud environments.",           tags: ["Systems","P2P","Networking"], color: "rgba(239,68,68,0.55)",   lines: "rgba(239,68,68,0.35)"   },
+        { cat: "Portals", title: "SAC Website", tag: "Web Portal", body: "sac.kluniversity.in", tags: ["Web", "Portal"], color: "rgba(59,130,246,0.55)", lines: "rgba(59,130,246,0.35)" },
+        { cat: "Portals", title: "SVR Website", tag: "Virtual Reality", body: "svr.kluniversity.in", tags: ["Web", "Virtual Reality"], color: "rgba(249,115,22,0.55)", lines: "rgba(249,115,22,0.35)" },
+        { cat: "Activities", title: "SAC Activities", tag: "Student Engagement", body: "sacactivites.kluniversity.in", tags: ["Web", "Engagement"], color: "rgba(139,92,246,0.55)", lines: "rgba(139,92,246,0.35)" },
+        { cat: "Programs", title: "Social Internship", tag: "Internship Program", body: "socialinternship.kluniversity.in", tags: ["Web", "Internship"], color: "rgba(34,197,94,0.55)", lines: "rgba(34,197,94,0.35)" },
+        { cat: "Events", title: "KLU Surabhi", tag: "Fest Website", body: "klusurabhi.in", tags: ["Web", "Fest"], color: "rgba(6,182,212,0.55)", lines: "rgba(6,182,212,0.35)" },
       ];
       for (let i = 0; i < projects.length; i++) {
         const p = projects[i];
@@ -84,15 +84,15 @@ export async function POST() {
     }
 
     // ── Seed achievements ──────────────────────────────────────────────────
+    await sql`TRUNCATE TABLE achievements RESTART IDENTITY CASCADE`;
     const ac = await sql`SELECT COUNT(*) as c FROM achievements`;
     if (Number(ac[0].c) === 0) {
       const items = [
-        { type: "featured", label: "National Hackathon · Bengaluru 2024", title: "1st Place",    subtitle: "of 500+ teams.", description: "AI-driven logistics optimisation challenge. Outranked every team with a real-time inference pipeline built in 36 hours.", stat: "", stat_label: "", bg_text: "01", sort_order: 0 },
-        { type: "stat",     label: "Grants Won",   title: "",              subtitle: "",           description: "",  stat: "₹20L+", stat_label: "National competitions", bg_text: "", sort_order: 1 },
-        { type: "award",    label: "Award",        title: "Tech Excellence", subtitle: "State Innovation Board · 2023", description: "", stat: "", stat_label: "", bg_text: "", sort_order: 2 },
-        { type: "quote",    label: "",             title: "Not a club. A standard.", subtitle: "", description: "", stat: "", stat_label: "", bg_text: "", sort_order: 3 },
-        { type: "stat",     label: "Active Members", title: "",            subtitle: "",           description: "",  stat: "500+", stat_label: "Across campuses", bg_text: "", sort_order: 4 },
-        { type: "summit",   label: "Global Innovation Summit", title: "Keynote Speaker", subtitle: "Singapore · 2023", description: "", stat: "", stat_label: "", bg_text: "GIS", sort_order: 5 },
+        { type: "featured", label: "Siddhartha Academy of Research Conclave Hackathon", title: "1st Prize", subtitle: "", description: "Secured the top rank by showcasing innovation and building a scalable technical solution.", stat: "", stat_label: "", bg_text: "01", sort_order: 0 },
+        { type: "award", label: "V R Siddhartha Webathon", title: "2nd Prize", subtitle: "", description: "", stat: "", stat_label: "", bg_text: "", sort_order: 1 },
+        { type: "award", label: "SRM NXTGEN Hackathon", title: "Domain Winners", subtitle: "", description: "", stat: "", stat_label: "", bg_text: "", sort_order: 2 },
+        { type: "award", label: "Bits techaccelerate hackathon", title: "Finalist", subtitle: "", description: "", stat: "", stat_label: "", bg_text: "", sort_order: 3 },
+        { type: "award", label: "Career Milestone", title: "Preplaced at Calibo", subtitle: "SDE Intern", description: "", stat: "", stat_label: "", bg_text: "", sort_order: 4 },
       ];
       for (const a of items) {
         await sql`INSERT INTO achievements (type,label,title,subtitle,description,stat,stat_label,bg_text,sort_order)
@@ -104,12 +104,12 @@ export async function POST() {
     const tc = await sql`SELECT COUNT(*) as c FROM team_members`;
     if (Number(tc[0].c) === 0) {
       const team = [
-        { name: "Arjun Mehta",   role: "Systems Lead",       stack: "Rust · Distributed · Cloud",  bio: "Redesigned the core search engine for a 40% speedup. Author of 3 widely-used open-source libraries.", bg_color: "#1a1a1a", skin_color: "#8a7260", hair_color: "#0e0e0e", hair_type: "short",    shoulder_tone: "#222"    },
-        { name: "Priya Nair",    role: "Head of Product",    stack: "Strategy · UX · Growth",       bio: "Ex-Series-B PM. Ships with ruthless prioritisation and an obsession with user empathy.",               bg_color: "#d4d4d4", skin_color: "#c8a882", hair_color: "#1a100a", hair_type: "long",     shoulder_tone: "#bbb"    },
-        { name: "Rohan Das",     role: "Design Principal",   stack: "Figma · Motion · Systems",     bio: "Led design for 4 products at 100k+ users. Makes interfaces feel inevitable.",                          bg_color: "#202020", skin_color: "#b09070", hair_color: "#111",    hair_type: "medium",   shoulder_tone: "#1a1a1a" },
-        { name: "Sneha Iyer",    role: "Frontend Architect", stack: "React · TS · Web Perf",        bio: "Cut TTI by 60% across the tooling suite. Thinks in render trees, ships in milliseconds.",              bg_color: "#e2e2e2", skin_color: "#d0a07a", hair_color: "#1e120a", hair_type: "shoulder", shoulder_tone: "#ccc"    },
-        { name: "Dev Kapoor",    role: "AI Research Lead",   stack: "ML · Transformers · Python",   bio: "Published research on bio-signal classification. Building next-gen edge inference models.",             bg_color: "#141414", skin_color: "#907860", hair_color: "#0a0a0a", hair_type: "short",    shoulder_tone: "#1c1c1c" },
-        { name: "Ananya Singh",  role: "Embedded Systems",   stack: "C++ · RTOS · Hardware",        bio: "Loves bare-metal. Designed the complete sensor-fusion layer for our robotics platform.",                bg_color: "#2e2e2e", skin_color: "#c0906a", hair_color: "#0d0d0d", hair_type: "long",     shoulder_tone: "#222"    },
+        { name: "Arjun Mehta", role: "Systems Lead", stack: "Rust · Distributed · Cloud", bio: "Redesigned the core search engine for a 40% speedup. Author of 3 widely-used open-source libraries.", bg_color: "#1a1a1a", skin_color: "#8a7260", hair_color: "#0e0e0e", hair_type: "short", shoulder_tone: "#222" },
+        { name: "Priya Nair", role: "Head of Product", stack: "Strategy · UX · Growth", bio: "Ex-Series-B PM. Ships with ruthless prioritisation and an obsession with user empathy.", bg_color: "#d4d4d4", skin_color: "#c8a882", hair_color: "#1a100a", hair_type: "long", shoulder_tone: "#bbb" },
+        { name: "Rohan Das", role: "Design Principal", stack: "Figma · Motion · Systems", bio: "Led design for 4 products at 100k+ users. Makes interfaces feel inevitable.", bg_color: "#202020", skin_color: "#b09070", hair_color: "#111", hair_type: "medium", shoulder_tone: "#1a1a1a" },
+        { name: "Sneha Iyer", role: "Frontend Architect", stack: "React · TS · Web Perf", bio: "Cut TTI by 60% across the tooling suite. Thinks in render trees, ships in milliseconds.", bg_color: "#e2e2e2", skin_color: "#d0a07a", hair_color: "#1e120a", hair_type: "shoulder", shoulder_tone: "#ccc" },
+        { name: "Dev Kapoor", role: "AI Research Lead", stack: "ML · Transformers · Python", bio: "Published research on bio-signal classification. Building next-gen edge inference models.", bg_color: "#141414", skin_color: "#907860", hair_color: "#0a0a0a", hair_type: "short", shoulder_tone: "#1c1c1c" },
+        { name: "Ananya Singh", role: "Embedded Systems", stack: "C++ · RTOS · Hardware", bio: "Loves bare-metal. Designed the complete sensor-fusion layer for our robotics platform.", bg_color: "#2e2e2e", skin_color: "#c0906a", hair_color: "#0d0d0d", hair_type: "long", shoulder_tone: "#222" },
       ];
       for (let i = 0; i < team.length; i++) {
         const m = team[i];

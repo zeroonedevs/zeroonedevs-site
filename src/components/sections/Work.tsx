@@ -2,67 +2,60 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeIn from "@/components/ui/FadeIn";
+import Link from "next/link";
 
-const FILTERS = ["All", "AI", "Systems", "Design", "Hardware"] as const;
+const FILTERS = ["All", "Portals", "Activities", "Programs", "Events"] as const;
 type F = typeof FILTERS[number];
 
 const projects: {
   id: string; cat: F; title: string; tags: string[];
   body: string; color: string; lines: string;
 }[] = [
-  {
-    id: "01", cat: "AI",
-    title: "Neural Mesh",
-    tags: ["AI", "Edge", "Research"],
-    body: "Real-time neural inference at the edge — sub-10ms latency on consumer hardware.",
-    color: "rgba(59,130,246,0.55)",
-    lines: "rgba(59,130,246,0.35)",
-  },
-  {
-    id: "02", cat: "Hardware",
-    title: "CyberKinetic Core",
-    tags: ["Hardware", "Robotics", "RTOS"],
-    body: "Embedded control stack for dynamic robotic environments with RTOS and sensor fusion.",
-    color: "rgba(249,115,22,0.55)",
-    lines: "rgba(249,115,22,0.35)",
-  },
-  {
-    id: "03", cat: "Systems",
-    title: "Orbit Scheduler",
-    tags: ["Systems", "Infra", "Cloud"],
-    body: "Zero-downtime task orchestration built for microservice-heavy production systems.",
-    color: "rgba(139,92,246,0.55)",
-    lines: "rgba(139,92,246,0.35)",
-  },
-  {
-    id: "04", cat: "Design",
-    title: "Synaptic UI",
-    tags: ["Design", "React", "Systems"],
-    body: "Component library that adapts layout density in real-time based on user behaviour signals.",
-    color: "rgba(34,197,94,0.55)",
-    lines: "rgba(34,197,94,0.35)",
-  },
-  {
-    id: "05", cat: "AI",
-    title: "BioSignal Filter",
-    tags: ["AI", "Health", "Wearables"],
-    body: "Wearable biosensor pipeline with on-device anomaly detection and cloud sync.",
-    color: "rgba(6,182,212,0.55)",
-    lines: "rgba(6,182,212,0.35)",
-  },
-  {
-    id: "06", cat: "Systems",
-    title: "Global Mesh Protocol",
-    tags: ["Systems", "P2P", "Networking"],
-    body: "Resilient decentralised networking protocol for heterogeneous edge-cloud environments.",
-    color: "rgba(239,68,68,0.55)",
-    lines: "rgba(239,68,68,0.35)",
-  },
-];
+    {
+      id: "01", cat: "Portals",
+      title: "SAC Website",
+      tags: ["Web", "Portal"],
+      body: "sac.kluniversity.in",
+      color: "rgba(59,130,246,0.55)",
+      lines: "rgba(59,130,246,0.35)",
+    },
+    {
+      id: "02", cat: "Portals",
+      title: "SVR Website",
+      tags: ["Web", "Virtual Reality"],
+      body: "svr.kluniversity.in",
+      color: "rgba(249,115,22,0.55)",
+      lines: "rgba(249,115,22,0.35)",
+    },
+    {
+      id: "03", cat: "Activities",
+      title: "SAC Activities",
+      tags: ["Web", "Engagement"],
+      body: "sacactivites.kluniversity.in",
+      color: "rgba(139,92,246,0.55)",
+      lines: "rgba(139,92,246,0.35)",
+    },
+    {
+      id: "04", cat: "Programs",
+      title: "Social Internship",
+      tags: ["Web", "Internship"],
+      body: "socialinternship.kluniversity.in",
+      color: "rgba(34,197,94,0.55)",
+      lines: "rgba(34,197,94,0.35)",
+    },
+    {
+      id: "05", cat: "Events",
+      title: "KLU Surabhi",
+      tags: ["Web", "Fest"],
+      body: "klusurabhi.in",
+      color: "rgba(6,182,212,0.55)",
+      lines: "rgba(6,182,212,0.35)",
+    },
+  ];
 
-function ProjectCard({ p }: { p: typeof projects[0] }) {
+function ProjectCard({ p }: { p: typeof projects[0] & { dbId?: string | number } }) {
   return (
-    <div className="group flex flex-col border border-white/[.08] bg-[#0e0e0e] transition-colors hover:border-white/[.15]">
+    <Link href={`/projects/${p.dbId || p.id}`} className="group flex flex-col border border-white/[.08] bg-[#0e0e0e] transition-colors hover:border-white/[.15]">
       {/* Visual area */}
       <div className="relative aspect-[3/2] overflow-hidden">
         {/* Line pattern background */}
@@ -105,7 +98,7 @@ function ProjectCard({ p }: { p: typeof projects[0] }) {
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 p-4">
-        {p.tags.map(t => (
+        {p.tags.map((t: string) => (
           <span
             key={t}
             className="border border-white/[.12] px-3 py-1 font-mono text-[10px] tracking-widest text-white/45"
@@ -114,7 +107,7 @@ function ProjectCard({ p }: { p: typeof projects[0] }) {
           </span>
         ))}
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -125,15 +118,16 @@ export default function Work({ projects: dbProjects }: { projects?: DBProject[] 
 
   const data = dbProjects && dbProjects.length > 0
     ? dbProjects.map((p, i) => ({
-        id: String(i + 1).padStart(2, "0"),
-        cat: p.cat as F,
-        title: p.title,
-        tag: p.tag,
-        tags: Array.isArray(p.tags) ? p.tags : (typeof p.tags === "string" ? JSON.parse(p.tags || "[]") : []),
-        body: p.body,
-        color: p.color,
-        lines: p.lines,
-      }))
+      id: String(i + 1).padStart(2, "0"),
+      dbId: p.id,
+      cat: p.cat as F,
+      title: p.title,
+      tag: p.tag,
+      tags: Array.isArray(p.tags) ? p.tags : (typeof p.tags === "string" ? JSON.parse(p.tags || "[]") : []),
+      body: p.body,
+      color: p.color,
+      lines: p.lines,
+    }))
     : projects;
 
   const shown = active === "All" ? data : data.filter(p => p.cat === active);
@@ -160,11 +154,10 @@ export default function Work({ projects: dbProjects }: { projects?: DBProject[] 
                 <button
                   key={f}
                   onClick={() => setActive(f)}
-                  className={`px-3 py-1.5 font-mono text-[10px] tracking-widest transition ${
-                    active === f
-                      ? "bg-white/[.07] text-white/80"
-                      : "text-white/25 hover:text-white/55"
-                  }`}
+                  className={`px-3 py-1.5 font-mono text-[10px] tracking-widest transition ${active === f
+                    ? "bg-white/[.07] text-white/80"
+                    : "text-white/25 hover:text-white/55"
+                    }`}
                 >
                   {f}
                 </button>
